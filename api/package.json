@@ -3,6 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "main": "src/index.js",
+  "config": {
+    "s3BucketName": "finalprojectdeploy2",
+    "region": "eu-central-1"
+  },
   "type": "module",
   "engines": {
     "node": "^20.12.1",
@@ -13,9 +17,20 @@
     "start": "node src/index.mjs",
     "format": "npx prettier . --write",
     "check": "npx eslint . --fix",
-    "test": "jest; npx mocha test/api.test.cjs"
+    "test": "jest; npx mocha test/api.test.cjs",
+    "local": "node scripts/local",
+    "invoke-lambda": "cross-var aws lambda invoke --function-name $npm_package_config_functionName --region $npm_package_config_region --payload file://api-gateway-event.json lambda-invoke-response.json && cat lambda-invoke-response.json",
+    "create-bucket": "cross-var aws s3 mb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
+    "delete-bucket": "cross-var aws s3 rb s3://$npm_package_config_s3BucketName --region $npm_package_config_region",
+    "package": "cross-var aws cloudformation package --template ./sam-template.yaml --s3-bucket $npm_package_config_s3BucketName --output-template sam-template.packaged.yaml --region $npm_package_config_region",
+    "deploy": "cross-var aws cloudformation deploy --template-file sam-template.packaged.yaml --stack-name $npm_package_config_cloudFormationStackName --capabilities CAPABILITY_IAM --region $npm_package_config_region --parameter-overrides DomainName=$npm_package_config_domain",
+    "package-deploy": "npm run build && npm run package && npm run deploy",
+    "delete-stack": "cross-var aws cloudformation delete-stack --stack-name $npm_package_config_cloudFormationStackName --region $npm_package_config_region",
+    "setup": "npm install && (cross-var aws s3api get-bucket-location --bucket $npm_package_config_s3BucketName --region $npm_package_config_region || npm run create-bucket) && npm run package-deploy",
+    "build": "webpack-cli"
   },
   "dependencies": {
+    "@codegenie/serverless-express": "^4.16.0",
     "aws-sdk": "^2.1692.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",

@@ -75,6 +75,8 @@ app.get("/", (req, res) => {
 });
 
 const port = process.env.PORT || 3001;
-server.listen(port, () => {
-  console.log(`API listening on port ${port}`);
-});
+// server.listen(port, () => {
+//   console.log(`API listening on port ${port}`);
+// });
+
+export default app;
