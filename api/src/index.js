@@ -23,13 +23,14 @@ const app = express();
 
 const server = http.createServer(app);
 setupSockets(server);
-
 app.use(
   cors({
     origin: (origin, callback) => {
       const allowedOrigins = [
         "https://homepage-frontend.d1raf63sxampba.amplifyapp.com",
         "https://w-flance.vercel.app",
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
       ];
 
       if (allowedOrigins.includes(origin) || !origin) {
@@ -77,5 +78,3 @@ const port = process.env.PORT || 3001;
 server.listen(port, () => {
   console.log(`API listening on port ${port}`);
 });
-
-export default app;

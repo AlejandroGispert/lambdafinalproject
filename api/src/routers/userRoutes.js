@@ -4,6 +4,7 @@ import {
   getUsers,
   getUserById,
   getUserFromToken,
+  validateUser,
 } from "../../controllers/userController.js";
 import authenticateToken from "../../middlewares/authenticateToken.js";
 
@@ -14,12 +15,12 @@ userRouter.get("/", (req, res) => {
 });
 
 userRouter.get("/users", authenticateToken, getUsers);
-//userRouter.get("/users", getUsers);
+//userRouter.get("/users",authenticateToken, getUsers);
 userRouter.get("/users/:id", authenticateToken, getUserById);
-//userRouter.get("/users/:id", getUserById);
+//userRouter.get("/users/:id",authenticateToken, getUserById);
 
-userRouter.post("/users", createUser);
+userRouter.post("/users", validateUser, createUser);
 
-userRouter.get("/user", authenticateToken, getUserFromToken);
+userRouter.get("/user", getUserFromToken);
 
 export default userRouter;
